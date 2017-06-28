@@ -1,0 +1,15 @@
+#!/bin/bash
+if [ ! -n "$1" ];then
+        echo "Usage: $0 {container name}"
+        exit 0
+fi
+
+docker build -t $1 .
+
+if [ $? != 0 ]; then
+    echo "docker build error!"
+    exit 1
+fi
+
+PWD=`pwd`
+docker run -v $PWD/Logs:/export/Logs -v $PWD/hosts:/etc/hosts -it $1 bash
