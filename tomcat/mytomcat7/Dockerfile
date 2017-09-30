@@ -87,6 +87,7 @@ RUN set -x \
 	&& rm bin/tomcat-native.tar.gz \
     && rm -rf webapps/* \
     && mkdir -p conf/Catalina/localhost \
+	&& sed -i 's/  redirectPort=\"8443\"/& URIEncoding=\"UTF-8\" useBodyEncodingForURI=\"true\"/g' conf/server.xml \
     && echo "<Context path=\"/\" docBase=\"/usr/local/tomcat/webapps/\"></Context>" > conf/Catalina/localhost/ROOT.xml \
 # sh removes env vars it doesn't support (ones with periods)
 # https://github.com/docker-library/tomcat/issues/77
@@ -103,8 +104,9 @@ RUN set -e \
 		exit 1; \
 	fi
 
-EXPOSE 8080
 ENV LANG=zh_CN.UTF-8
 ENV JAVA_OPTS "-Djava.library.path=/usr/local/lib -server -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -Djava.awt.headless=true -Dsun.net.client.defaultConnectTimeout=60000 -Dsun.net.client.defaultReadTimeout=60000 -Djmagick.systemclassloader=no -Dnetworkaddress.cache.ttl=300 -Dsun.net.inetaddr.ttl=300"
-ENV CATALINA_OPTS "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=22088"
+ENV CATALINA_OPTS "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7010"
+EXPOSE 7010
+EXPOSE 8080
 CMD ["sh"]
